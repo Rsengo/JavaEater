@@ -2,6 +2,7 @@ package CandyEater.Service;
 
 import CandyEater.Candy.ICandy;
 import CandyEater.CandyEater.ICandyEater;
+import CandyEater.Tasks.EatTask;
 
 import java.util.Arrays;
 import java.util.List;
@@ -87,17 +88,8 @@ public class CandyService extends CandyServiceBase {
      * @param candy Конфета.
      */
     private void startEater(ICandyEater eater, ICandy candy) {
-        var thread = new Thread(() -> {
-            try {
-                eater.eat(candy);
-            } catch (Exception ex) {
-
-            } finally {
-                start();
-            }
-        });
-
-        mExecutor.execute(thread);
+        var task = new EatTask(eater, candy, this::start, this::start);
+        mExecutor.execute(task);
     }
 
     /**
