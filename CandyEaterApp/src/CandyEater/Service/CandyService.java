@@ -27,6 +27,9 @@ public class CandyService extends CandyServiceBase {
      */
     private ThreadPoolExecutor mExecutor;
 
+    /**
+     * Пул потоков для добавления конфеты.
+     */
     private ThreadPoolExecutor mAddCandyExecutor;
 
     /**
