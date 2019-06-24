@@ -1,27 +1,30 @@
 package CandyEater.Service;
 
+import CandyEater.Candy.Flavours;
 import CandyEater.Candy.ICandy;
 import CandyEater.CandyEater.ICandyEater;
 import CandyEater.Tasks.EatTask;
 
-import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Spliterators;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class CandyService extends CandyServiceBase {
+    /**
+     * Пул пожирателей.
+     */
+    private CopyOnWriteArrayList<ICandyEater> mEatersPool;
+
     /**
      * Пул конфет для пожирания.
      */
     private CopyOnWriteArrayList<ICandy> mCandies;
-
-    /**
-     * Пул всех вкусов.
-     */
-    private int[] mAllFlavours;
 
     /**
      * Пул потоков.
@@ -29,20 +32,25 @@ public class CandyService extends CandyServiceBase {
     private ThreadPoolExecutor mExecutor;
 
     /**
+     * Словарь типа "вкус - доступность для пожирания".
+     */
+    private Hashtable<Integer, Boolean> mEnableFlavoursDict;
+
+    /**
      * Конструктор.
      * @param eaters Список пожирателей.
-     * @param allFlavours Список всеъ вкусов.
      */
-    public CandyService(ICandyEater[] eaters, int[] allFlavours) {
+    public CandyService(ICandyEater[] eaters) {
         super(eaters);
+        mEatersPool = new CopyOnWriteArrayList<>(eaters);
         mCandies = new CopyOnWriteArrayList<>();
-        mAllFlavours = allFlavours;
         mExecutor = new ThreadPoolExecutor(
                 eaters.length,
                 eaters.length,
                 0,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(eaters.length));
+        mEnableFlavoursDict = getEnableFlavoursDict();
     }
 
     /**
@@ -59,15 +67,14 @@ public class CandyService extends CandyServiceBase {
      * Запуск сервиса.
      */
     private void start() {
-        var flavours = getFreeFlavours(mEatersPool, mAllFlavours);
-        var eaters = getFreeEaters(mEatersPool);
+        var flavours = getFreeFlavours(mEnableFlavoursDict);
 
-        if (flavours.isEmpty() || eaters.isEmpty()) {
+        if (flavours.isEmpty() || mEatersPool.isEmpty()) {
             return;
         }
 
         for (var candy : mCandies) {
-            var eater = eaters.stream().findFirst();
+            var eater = mEatersPool.stream().findFirst();
 
             if (eater.isEmpty())
                 break;
@@ -88,43 +95,49 @@ public class CandyService extends CandyServiceBase {
      * @param candy Конфета.
      */
     private void startEater(ICandyEater eater, ICandy candy) {
-        var task = new EatTask(eater, candy, this::start, this::start);
+        var flavour = candy.getCandyFlavour();
+        mEnableFlavoursDict.replace(flavour, false);
+        var task = new EatTask(
+                eater,
+                candy,
+                () -> {
+                    mEnableFlavoursDict.replace(flavour, true);
+                    mCandies.remove(candy);
+                    start();
+                },
+                () -> {
+                    mEnableFlavoursDict.replace(flavour, true);
+                    start();
+                });
         mExecutor.execute(task);
     }
 
     /**
      * Получение вкусов, которые можно обработать.
-     * @param eaters Пожиратели.
-     * @param allFlavours Все вкусы.
      * @return Вкусы, доступные для пожирания.
      */
-    private static List<Integer> getFreeFlavours(ICandyEater[] eaters, int[] allFlavours) {
-        var notFreeFlavours = Arrays.stream(eaters).filter(x -> {
-            var hasCandy = x.hasCandy();
-            return hasCandy;
-        }).map(x -> {
-            var candy = x.getCandy();
-            return candy.getCandyFlavour();
-        });
-
-        var freeFlavours = Arrays.stream(allFlavours)
-                .filter(x -> notFreeFlavours.allMatch(y -> y != x))
-                .boxed()
+    private static List<Integer> getFreeFlavours(Hashtable<Integer, Boolean> enableFlavoursDict) {
+        var flavours = enableFlavoursDict.keys();
+        var spliterator = Spliterators.spliteratorUnknownSize(flavours.asIterator(), 0);
+        var filtered = StreamSupport.stream(spliterator, false)
+                .filter(enableFlavoursDict::get)
                 .collect(Collectors.toList());
-
-        return freeFlavours;
+        return filtered;
     }
 
     /**
-     * Получение свободных пожирателей.
-     * @param eatersPool Пул пожирателей.
-     * @return Список свободных пожирателей.
+     * Получение словаря доступности вкусов.
+     * @return Словарь доступности вкусов.
      */
-    private static List<ICandyEater> getFreeEaters(ICandyEater[] eatersPool) {
-        var freeEaters = Arrays.stream(eatersPool)
-                .filter(x -> !x.hasCandy())
-                .collect(Collectors.toList());
+    private static Hashtable<Integer, Boolean> getEnableFlavoursDict() {
+        var flavoursEnum = Flavours.values();
+        var hashtable = new Hashtable<Integer, Boolean>();
 
-        return freeEaters;
+        for (var flavourEnumItem : flavoursEnum) {
+            var flavour = flavourEnumItem.ordinal();
+            hashtable.put(flavour, true);
+        }
+
+        return hashtable;
     }
 }

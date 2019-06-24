@@ -5,16 +5,11 @@ import CandyEater.CandyEater.ICandyEater;
 
 public abstract class CandyServiceBase {
     /**
-     * Пул пожирателей.
-     */
-    protected ICandyEater[] mEatersPool;
-
-    /**
      * Сервис получает при инициализации массив доступных пожирателей конфет.
      * @param candyEaters Список пожирателей.
      */
     public CandyServiceBase(ICandyEater[] candyEaters) {
-        mEatersPool = candyEaters;
+
     }
 
     /**
