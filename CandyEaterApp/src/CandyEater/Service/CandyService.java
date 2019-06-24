@@ -112,7 +112,13 @@ public class CandyService extends CandyServiceBase {
                 break;
 
             var queue = mCandies.get(key);
-            var flavour = queue.peek().getCandyFlavour();
+            var candy = queue.peek();
+
+            if (candy == null)
+                continue;
+
+            var flavour = candy.getCandyFlavour();
+
             var canBeEaten = flavours.stream().anyMatch(x -> x == flavour);
 
             if (!canBeEaten)
