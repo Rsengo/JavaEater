@@ -4,12 +4,24 @@ import CandyEater.Candy.ICandy;
 import CandyEater.CandyEater.ICandyEater;
 
 public class EatTask implements Runnable {
+    /**
+     * Колбэк на успешное выполнение.
+     */
     private Action mSuccessCallback;
 
+    /**
+     * Колбэк на исключение.
+     */
     private Action mErrorCallback;
 
+    /**
+     * Пожиратель.
+     */
     private ICandyEater mEater;
 
+    /**
+     * Конфета.
+     */
     private ICandy mCandy;
 
     public EatTask(

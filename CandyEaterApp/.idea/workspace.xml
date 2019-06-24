@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aae094ac-207e-42e9-aa12-fa37a95e64a7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/CandyEater/Tasks/Action.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CandyEater/Service/CandyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CandyEater/Service/CandyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/CandyEater/Service/CandyService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="91" column="30" selection-start-line="91" selection-start-column="30" selection-end-line="91" selection-end-column="30" />
+            <state relative-caret-position="382">
+              <caret line="92" column="5" lean-forward="true" selection-start-line="92" selection-start-column="5" selection-end-line="92" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -52,11 +49,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+            <state relative-caret-position="425">
+              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -107,8 +104,8 @@
         <option value="$PROJECT_DIR$/src/CandyEater/Service/CandyServiceBase.java" />
         <option value="$PROJECT_DIR$/src/CandyEater/Main.java" />
         <option value="$PROJECT_DIR$/src/CandyEater/Tasks/Action.java" />
-        <option value="$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java" />
         <option value="$PROJECT_DIR$/src/CandyEater/Service/CandyService.java" />
+        <option value="$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java" />
       </list>
     </option>
   </component>
@@ -198,12 +195,12 @@
       <option name="presentableId" value="Default" />
       <updated>1561354453150</updated>
       <workItem from="1561354456492" duration="9240000" />
-      <workItem from="1561363795793" duration="2770000" />
+      <workItem from="1561363795793" duration="2879000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12010000" />
+    <option name="totallyTimeSpent" value="12119000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
@@ -301,20 +298,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java">
+    <entry file="file://$PROJECT_DIR$/src/CandyEater/Service/CandyService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+        <state relative-caret-position="382">
+          <caret line="92" column="5" lean-forward="true" selection-start-line="92" selection-start-column="5" selection-end-line="92" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/CandyEater/Service/CandyService.java">
+    <entry file="file://$PROJECT_DIR$/src/CandyEater/Tasks/EatTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="91" column="30" selection-start-line="91" selection-start-column="30" selection-end-line="91" selection-end-column="30" />
+        <state relative-caret-position="425">
+          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
