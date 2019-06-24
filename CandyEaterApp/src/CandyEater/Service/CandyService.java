@@ -4,10 +4,7 @@ import CandyEater.Candy.ICandy;
 import CandyEater.CandyEater.ICandyEater;
 import CandyEater.Tasks.EatTask;
 
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -78,26 +75,31 @@ public class CandyService extends CandyServiceBase {
      * Запуск сервиса.
      */
     private void start() {
-//        var flavours = getFreeFlavours();
-//
-//        if (flavours.isEmpty() || mEatersPool.isEmpty()) {
-//            return;
-//        }
-//
-//        for (var candy : mCandies) {
-//            var eater = mEatersPool.peek();
-//
-//            if (eater == null)
-//                break;
-//
-//            var flavour = candy.getCandyFlavour();
-//            var canBeEaten = flavours.stream().anyMatch(x -> x == flavour);
-//
-//            if (!canBeEaten)
-//                continue;
-//
-//            startEater(eater, candy);
-//        }
+        var flavours = getFreeFlavours();
+
+        if (flavours.isEmpty() || mEatersPool.isEmpty()) {
+            return;
+        }
+
+        var keysIterator = mCandies.keys().asIterator();
+        var keys = new ArrayList<Integer>();
+        keysIterator.forEachRemaining(keys::add);
+
+        for (var key : keys) {
+            var eater = mEatersPool.peek();
+
+            if (eater == null)
+                break;
+
+            var queue = mCandies.get(key);
+            var flavour = queue.peek().getCandyFlavour();
+            var canBeEaten = flavours.stream().anyMatch(x -> x == flavour);
+
+            if (!canBeEaten)
+                continue;
+
+            startEater(eater, queue.poll());
+        }
     }
 
     /**
