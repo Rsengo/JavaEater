@@ -1,17 +1,14 @@
 package CandyEater.Service;
 
-import CandyEater.Candy.Flavours;
 import CandyEater.Candy.ICandy;
 import CandyEater.CandyEater.ICandyEater;
 import CandyEater.Tasks.EatTask;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Spliterators;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -19,12 +16,12 @@ public class CandyService extends CandyServiceBase {
     /**
      * Пул пожирателей.
      */
-    private CopyOnWriteArrayList<ICandyEater> mEatersPool;
+    private ConcurrentLinkedQueue<ICandyEater> mEatersPool;
 
     /**
      * Пул конфет для пожирания.
      */
-    private CopyOnWriteArrayList<ICandy> mCandies;
+    private Hashtable<Integer, ConcurrentLinkedQueue<ICandy>> mCandies;
 
     /**
      * Пул потоков.
@@ -42,15 +39,15 @@ public class CandyService extends CandyServiceBase {
      */
     public CandyService(ICandyEater[] eaters) {
         super(eaters);
-        mEatersPool = new CopyOnWriteArrayList<>(eaters);
-        mCandies = new CopyOnWriteArrayList<>();
+        mEatersPool = new ConcurrentLinkedQueue<>(Arrays.asList(eaters));
+        mCandies = new Hashtable<>();
         mExecutor = new ThreadPoolExecutor(
                 eaters.length,
                 eaters.length,
                 0,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(eaters.length));
-        mEnableFlavoursDict = getEnableFlavoursDict();
+        mEnableFlavoursDict = new Hashtable<>();
     }
 
     /**
@@ -59,34 +56,48 @@ public class CandyService extends CandyServiceBase {
      */
     @Override
     public void addCandy(ICandy candy) {
-        mCandies.add(candy);
+        addCandyFlavour(candy);
         start();
+    }
+
+    private void addCandyFlavour(ICandy candy) {
+        var flavour = candy.getCandyFlavour();
+
+        if (!mEnableFlavoursDict.containsKey(flavour)) {
+            mEnableFlavoursDict.put(flavour, true);
+            var queue = new ConcurrentLinkedQueue<ICandy>();
+            queue.add(candy);
+            mCandies.put(flavour, queue);
+        } else {
+            var queue = mCandies.get(flavour);
+            queue.add(candy);
+        }
     }
 
     /**
      * Запуск сервиса.
      */
     private void start() {
-        var flavours = getFreeFlavours(mEnableFlavoursDict);
-
-        if (flavours.isEmpty() || mEatersPool.isEmpty()) {
-            return;
-        }
-
-        for (var candy : mCandies) {
-            var eater = mEatersPool.stream().findFirst();
-
-            if (eater.isEmpty())
-                break;
-
-            var flavour = candy.getCandyFlavour();
-            var canBeEaten = flavours.stream().anyMatch(x -> x == flavour);
-
-            if (!canBeEaten)
-                continue;
-
-            startEater(eater.get(), candy);
-        }
+//        var flavours = getFreeFlavours();
+//
+//        if (flavours.isEmpty() || mEatersPool.isEmpty()) {
+//            return;
+//        }
+//
+//        for (var candy : mCandies) {
+//            var eater = mEatersPool.peek();
+//
+//            if (eater == null)
+//                break;
+//
+//            var flavour = candy.getCandyFlavour();
+//            var canBeEaten = flavours.stream().anyMatch(x -> x == flavour);
+//
+//            if (!canBeEaten)
+//                continue;
+//
+//            startEater(eater, candy);
+//        }
     }
 
     /**
@@ -116,28 +127,16 @@ public class CandyService extends CandyServiceBase {
      * Получение вкусов, которые можно обработать.
      * @return Вкусы, доступные для пожирания.
      */
-    private static List<Integer> getFreeFlavours(Hashtable<Integer, Boolean> enableFlavoursDict) {
-        var flavours = enableFlavoursDict.keys();
+    private  List<Integer> getFreeFlavours() {
+        var flavours = mEnableFlavoursDict.keys();
         var spliterator = Spliterators.spliteratorUnknownSize(flavours.asIterator(), 0);
         var filtered = StreamSupport.stream(spliterator, false)
-                .filter(enableFlavoursDict::get)
+                .filter(mEnableFlavoursDict::get)
+                .filter(x -> {
+                    var queue = mCandies.get(x);
+                    return !queue.isEmpty();
+                })
                 .collect(Collectors.toList());
         return filtered;
-    }
-
-    /**
-     * Получение словаря доступности вкусов.
-     * @return Словарь доступности вкусов.
-     */
-    private static Hashtable<Integer, Boolean> getEnableFlavoursDict() {
-        var flavoursEnum = Flavours.values();
-        var hashtable = new Hashtable<Integer, Boolean>();
-
-        for (var flavourEnumItem : flavoursEnum) {
-            var flavour = flavourEnumItem.ordinal();
-            hashtable.put(flavour, true);
-        }
-
-        return hashtable;
     }
 }
