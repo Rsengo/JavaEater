@@ -66,6 +66,10 @@ public class CandyService extends CandyServiceBase {
      */
     @Override
     public void addCandy(ICandy candy) {
+        if (candy == null) {
+            throw new NullPointerException("Не передана конфета");
+        }
+
         var thread = new Thread(() -> {
             addCandyFlavour(candy);
             start();
