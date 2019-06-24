@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class CandyService extends CandyServiceBase {
+    private static final int ADD_CANDY_THREADS_COUNT  = 1024;
+
     /**
      * Пул пожирателей.
      */
@@ -24,6 +26,8 @@ public class CandyService extends CandyServiceBase {
      * Пул потоков.
      */
     private ThreadPoolExecutor mExecutor;
+
+    private ThreadPoolExecutor mAddCandyExecutor;
 
     /**
      * Словарь типа "вкус - доступность для пожирания".
@@ -44,6 +48,12 @@ public class CandyService extends CandyServiceBase {
                 0,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(eaters.length));
+        mAddCandyExecutor = new ThreadPoolExecutor(
+                1,
+                ADD_CANDY_THREADS_COUNT,
+                0,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(ADD_CANDY_THREADS_COUNT));
         mEnableFlavoursDict = new Hashtable<>();
     }
 
@@ -53,11 +63,18 @@ public class CandyService extends CandyServiceBase {
      */
     @Override
     public void addCandy(ICandy candy) {
-        addCandyFlavour(candy);
-        start();
+        var thread = new Thread(() -> {
+            addCandyFlavour(candy);
+            start();
+        });
+        mAddCandyExecutor.execute(thread);
     }
 
-    private void addCandyFlavour(ICandy candy) {
+    /**
+     * Запись информации о вкусе.
+     * @param candy Конфета.
+     */
+    private synchronized void addCandyFlavour(ICandy candy) {
         var flavour = candy.getCandyFlavour();
 
         if (!mEnableFlavoursDict.containsKey(flavour)) {
@@ -74,7 +91,7 @@ public class CandyService extends CandyServiceBase {
     /**
      * Запуск сервиса.
      */
-    private void start() {
+    private synchronized void start() {
         var flavours = getFreeFlavours();
 
         if (flavours.isEmpty() || mEatersPool.isEmpty()) {
