@@ -9,41 +9,41 @@ public class EatTask implements Runnable {
     /**
      * Колбэк на успешное выполнение.
      */
-    private Action mSuccessCallback;
+    private Action successCallback;
 
     /**
      * Колбэк на исключение.
      */
-    private Consumer<Exception> mErrorCallback;
+    private Consumer<Exception> errorCallback;
 
     /**
      * Пожиратель.
      */
-    private ICandyEater mEater;
+    private ICandyEater eater;
 
     /**
      * Конфета.
      */
-    private ICandy mCandy;
+    private ICandy candy;
 
     public EatTask(
             ICandyEater eater,
             ICandy candy,
             Action successCallback,
             Consumer<Exception> errorCallback) {
-        mSuccessCallback = successCallback;
-        mErrorCallback = errorCallback;
-        mEater = eater;
-        mCandy = candy;
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+        this.eater = eater;
+        this.candy = candy;
     }
 
     @Override
     public void run() {
         try {
-            mEater.eat(mCandy);
-            mSuccessCallback.execute();
+            eater.eat(candy);
+            successCallback.execute();
         } catch (Exception ex) {
-            mErrorCallback.accept(ex);
+            errorCallback.accept(ex);
         }
     }
 }

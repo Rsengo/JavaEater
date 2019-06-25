@@ -6,37 +6,38 @@ import CandyEater.Tasks.EatTask;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class CandyService extends CandyServiceBase {
     /**
      * Пул пожирателей.
      */
-    private final LinkedBlockingQueue<ICandyEater> mEatersPool;
+    private final LinkedBlockingQueue<ICandyEater> eatersPool;
 
     /**
      * Пул конфет для пожирания.
      */
-    private final LinkedBlockingDeque<ICandy> mCandies;
+    private final LinkedBlockingDeque<ICandy> candies;
 
     /**
      * Пул потоков.
      */
-    private final ThreadPoolExecutor mExecutor;
+    private final ThreadPoolExecutor executor;
 
     /**
      * Словарь типа "вкус - доступность для пожирания".
      */
-    private final Set<Integer> mProcessedFlavours;
+    private final Set<Integer> processedFlavours;
 
     /**
      * Флаг остановки диспетчера.
      */
-    private volatile boolean mShouldTerminate;
+    private volatile boolean shouldTerminate;
 
     /**
      * Поток диспетчера.
      */
-    private final Thread mDispatchHandler;
+    private final Thread dispatchHandler;
 
     /**
      * Конструктор.
@@ -44,28 +45,38 @@ public class CandyService extends CandyServiceBase {
      */
     public CandyService(ICandyEater[] eaters) {
         super(eaters);
-        mCandies = new LinkedBlockingDeque<>();
-        mProcessedFlavours = ConcurrentHashMap.newKeySet();
-        mDispatchHandler = new Thread(null, this::dispatchLoop, "Dispatch loop");
 
-        if (eaters == null || eaters.length == 0)
+        if (eaters == null) {
+            throw new IllegalArgumentException("Не переданы пожиратели");
+        }
+
+        var validEaters = Arrays.stream(eaters)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        candies = new LinkedBlockingDeque<>();
+        processedFlavours = ConcurrentHashMap.newKeySet();
+        dispatchHandler = new Thread(null, this::dispatchLoop, "Dispatch loop");
+
+        if (validEaters.isEmpty())
         {
-            mExecutor = null;
-            mEatersPool = new LinkedBlockingQueue<>();
+            executor = null;
+            eatersPool = new LinkedBlockingQueue<>();
             terminate();
             return;
         }
 
-        mEatersPool = new LinkedBlockingQueue<>(Arrays.asList(eaters));
-        mExecutor = new ThreadPoolExecutor(
-                eaters.length,
-                eaters.length,
+        final int eatersCount = validEaters.size();
+        eatersPool = new LinkedBlockingQueue<>(validEaters);
+        executor = new ThreadPoolExecutor(
+                eatersCount,
+                eatersCount,
                 0,
                 TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(eaters.length));
+                new ArrayBlockingQueue<>(eatersCount));
 
-        mShouldTerminate = false;
-        mDispatchHandler.start();
+        shouldTerminate = false;
+        dispatchHandler.start();
     }
 
     /**
@@ -73,10 +84,10 @@ public class CandyService extends CandyServiceBase {
      */
     @SuppressWarnings("WeakerAccess")
     public void terminate() {
-        mShouldTerminate = true;
+        shouldTerminate = true;
 
-        if (mExecutor != null) {
-            mExecutor.shutdown();
+        if (executor != null) {
+            executor.shutdown();
         }
     }
 
@@ -90,10 +101,10 @@ public class CandyService extends CandyServiceBase {
         if (candy == null)
             throw new IllegalArgumentException("Не передана конфета");
 
-        if (mEatersPool.isEmpty())
+        if (eatersPool.isEmpty())
             throw new IllegalStateException("Нет доступных обработчиков");
 
-        mCandies.add(candy);
+        candies.add(candy);
     }
 
     /**
@@ -107,24 +118,24 @@ public class CandyService extends CandyServiceBase {
                 eater,
                 candy,
                 () -> {
-                    synchronized (mProcessedFlavours) {
-                        mProcessedFlavours.remove(flavour);
+                    synchronized (processedFlavours) {
+                        processedFlavours.remove(flavour);
                     }
-                    mEatersPool.add(eater);
+                    eatersPool.add(eater);
                 },
                 ex -> {
                     ex.printStackTrace();
-                    synchronized (mProcessedFlavours) {
-                        mProcessedFlavours.remove(flavour);
+                    synchronized (processedFlavours) {
+                        processedFlavours.remove(flavour);
                     }
-                    mCandies.add(candy);
-                    mEatersPool.add(eater);
+                    candies.add(candy);
+                    eatersPool.add(eater);
                 });
-        mExecutor.execute(task);
+        executor.execute(task);
     }
 
     private void dispatchLoop() {
-        while (!mShouldTerminate) {
+        while (!shouldTerminate) {
             try {
                 dispatch();
             }
@@ -141,23 +152,23 @@ public class CandyService extends CandyServiceBase {
     private void dispatch() throws InterruptedException {
         var skiped = new ArrayList<ICandy>();
 
-        while (!mCandies.isEmpty()) {
-            var candy = mCandies.take();
+        while (!candies.isEmpty()) {
+            var candy = candies.take();
             var flavour = candy.getCandyFlavour();
 
-            synchronized (mProcessedFlavours) {
-                if (mProcessedFlavours.contains(flavour)) {
+            synchronized (processedFlavours) {
+                if (processedFlavours.contains(flavour)) {
                     skiped.add(candy);
                     continue;
                 }
 
-                mProcessedFlavours.add(flavour);
+                processedFlavours.add(flavour);
             }
 
-            var eater = mEatersPool.take();
+            var eater = eatersPool.take();
 
-            synchronized (mCandies) {
-                skiped.iterator().forEachRemaining(mCandies::addFirst);
+            synchronized (candies) {
+                skiped.iterator().forEachRemaining(candies::addFirst);
             }
 
             startEater(eater, candy);
