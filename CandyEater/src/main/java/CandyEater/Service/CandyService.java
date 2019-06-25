@@ -178,14 +178,16 @@ public class CandyService extends CandyServiceBase {
             }
 
             var eater = eatersPool.take();
-
-            synchronized (candies) {
-                skiped.iterator().forEachRemaining(candies::addFirst);
-            }
-
             startEater(eater, candy);
 
             break;
+        }
+
+        if (!skiped.isEmpty()) {
+            synchronized (candies) {
+                skiped.iterator().forEachRemaining(candies::addFirst);
+                skiped.clear();
+            }
         }
     }
 }

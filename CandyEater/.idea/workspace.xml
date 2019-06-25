@@ -39,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Service/CandyService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="102" column="30" selection-start-line="102" selection-start-column="30" selection-end-line="102" selection-end-column="30" />
+            <state relative-caret-position="316">
+              <caret line="179" column="42" selection-start-line="179" selection-start-column="42" selection-end-line="179" selection-end-column="42" />
               <folding>
                 <element signature="e#2497#2498#0" expanded="true" />
                 <element signature="e#2538#2539#0" expanded="true" />
@@ -53,10 +53,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="9" column="35" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/mocks/MockCandy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="40" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
+            <state relative-caret-position="-160">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -64,8 +76,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/mocks/MockCandyEater.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+            <state relative-caret-position="231">
+              <caret line="19" column="35" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -73,11 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/CandyEaterTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1003">
-              <caret line="59" column="53" selection-start-line="59" selection-start-column="53" selection-end-line="59" selection-end-column="53" />
+            <state relative-caret-position="323">
+              <caret line="70" column="45" lean-forward="true" selection-start-line="70" selection-start-column="45" selection-end-line="70" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -86,19 +98,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Candy/Candy.java">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.4.2/junit-platform-commons-1.4.2.jar!/org/junit/platform/commons/util/ReflectionUtils.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Candy/ICandy.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+            <state relative-caret-position="2981">
+              <caret line="260" column="9" selection-start-line="260" selection-start-column="9" selection-end-line="260" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -122,13 +125,14 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/java/candyeater/mocks/MockCandy.java" />
         <option value="$PROJECT_DIR$/src/test/java/candyeater/mocks/MockCandyEater.java" />
-        <option value="$PROJECT_DIR$/src/test/java/candyeater/CandyEaterTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CandyEater/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/CandyEater/Service/CandyService.java" />
+        <option value="$PROJECT_DIR$/src/test/java/candyeater/CandyEaterTest.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
+    <option name="x" value="1891" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
@@ -246,7 +250,35 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.CandyEaterTest">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CandyEater.Main" />
+      <module name="CandyEater" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CandyEater.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CandyEaterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CandyEater" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="candyeater.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="candyeater" />
+      <option name="MAIN_CLASS_NAME" value="candyeater.CandyEaterTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="CandyEaterTest.shouldEatAllCandies" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CandyEater" />
       <extension name="coverage">
@@ -263,8 +295,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="CandyEaterTest.shouldNotFallWithTooManyEaters" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CandyEater" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="candyeater.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="candyeater" />
+      <option name="MAIN_CLASS_NAME" value="candyeater.CandyEaterTest" />
+      <option name="METHOD_NAME" value="shouldNotFallWithTooManyEaters" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.CandyEaterTest" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.CandyEaterTest.shouldNotFallWithTooManyEaters" />
         <item itemvalue="JUnit.CandyEaterTest.shouldEatAllCandies" />
       </list>
     </recent_temporary>
@@ -279,15 +330,47 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1561446539185</updated>
-      <workItem from="1561446542392" duration="285000" />
+      <workItem from="1561446542392" duration="2226000" />
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="CandyEaterTest_shouldEatAllCandies - 2019.06.25 at 14h 21m 27s.xml">
+      <configuration name="CandyEaterTest.shouldEatAllCandies" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest_shouldEatAllCandies - 2019.06.25 at 14h 22m 07s.xml">
+      <configuration name="CandyEaterTest.shouldEatAllCandies" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest - 2019.06.25 at 14h 22m 58s.xml">
+      <configuration name="CandyEaterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest - 2019.06.25 at 14h 24m 36s.xml">
+      <configuration name="CandyEaterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest_shouldNotFallWithTooManyEaters - 2019.06.25 at 14h 27m 20s.xml">
+      <configuration name="CandyEaterTest.shouldNotFallWithTooManyEaters" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest - 2019.06.25 at 14h 29m 52s.xml">
+      <configuration name="CandyEaterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest - 2019.06.25 at 14h 34m 24s.xml">
+      <configuration name="CandyEaterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest - 2019.06.25 at 14h 35m 09s.xml">
+      <configuration name="CandyEaterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest - 2019.06.25 at 14h 45m 07s.xml">
+      <configuration name="CandyEaterTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CandyEaterTest - 2019.06.25 at 14h 46m 49s.xml">
+      <configuration name="CandyEaterTest" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="285000" />
+    <option name="totallyTimeSpent" value="2226000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Image Layers" />
@@ -297,6 +380,7 @@
       <window_info id="Favorites" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" />
@@ -304,8 +388,8 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32936078" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3997833" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -323,14 +407,25 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>candies.stream().filter((c) -&gt; !c.isEaten()).toArray()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>candies.stream().filter((c) -&gt; !c.isEaten())</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Tasks/Action.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Tasks/EatTask.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Main.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/CandyEater/ICandyEater.java">
@@ -374,27 +469,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/mocks/MockCandy.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.4.2/junit-platform-commons-1.4.2.jar!/org/junit/platform/commons/util/ReflectionUtils.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="40" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
+        <state relative-caret-position="2981">
+          <caret line="260" column="9" selection-start-line="260" selection-start-column="9" selection-end-line="260" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/mocks/MockCandyEater.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+        <state relative-caret-position="231">
+          <caret line="19" column="35" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/CandyEaterTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1003">
-          <caret line="59" column="53" selection-start-line="59" selection-start-column="53" selection-end-line="59" selection-end-column="53" />
+        <state relative-caret-position="102">
+          <caret line="9" column="35" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/mocks/MockCandy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-160">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -403,11 +505,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CandyEater/Service/CandyService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="102" column="30" selection-start-line="102" selection-start-column="30" selection-end-line="102" selection-end-column="30" />
+        <state relative-caret-position="316">
+          <caret line="179" column="42" selection-start-line="179" selection-start-column="42" selection-end-line="179" selection-end-column="42" />
           <folding>
             <element signature="e#2497#2498#0" expanded="true" />
             <element signature="e#2538#2539#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/candyeater/CandyEaterTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="70" column="45" lean-forward="true" selection-start-line="70" selection-start-column="45" selection-end-line="70" selection-end-column="45" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
