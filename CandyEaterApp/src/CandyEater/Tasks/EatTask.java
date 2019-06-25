@@ -3,6 +3,8 @@ package CandyEater.Tasks;
 import CandyEater.Candy.ICandy;
 import CandyEater.CandyEater.ICandyEater;
 
+import java.util.function.Consumer;
+
 public class EatTask implements Runnable {
     /**
      * Колбэк на успешное выполнение.
@@ -12,7 +14,7 @@ public class EatTask implements Runnable {
     /**
      * Колбэк на исключение.
      */
-    private Action mErrorCallback;
+    private Consumer<Exception> mErrorCallback;
 
     /**
      * Пожиратель.
@@ -28,7 +30,7 @@ public class EatTask implements Runnable {
             ICandyEater eater,
             ICandy candy,
             Action successCallback,
-            Action errorCallback) {
+            Consumer<Exception> errorCallback) {
         mSuccessCallback = successCallback;
         mErrorCallback = errorCallback;
         mEater = eater;
@@ -41,7 +43,7 @@ public class EatTask implements Runnable {
             mEater.eat(mCandy);
             mSuccessCallback.execute();
         } catch (Exception ex) {
-            mErrorCallback.execute();
+            mErrorCallback.accept(ex);
         }
     }
 }

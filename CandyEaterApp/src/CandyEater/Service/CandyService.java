@@ -6,36 +6,37 @@ import CandyEater.Tasks.EatTask;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class CandyService extends CandyServiceBase {
-    private static final int ADD_CANDY_THREADS_COUNT  = 1024;
-
     /**
      * Пул пожирателей.
      */
-    private ConcurrentLinkedQueue<ICandyEater> mEatersPool;
+    private final LinkedBlockingQueue<ICandyEater> mEatersPool;
 
     /**
      * Пул конфет для пожирания.
      */
-    private Hashtable<Integer, ConcurrentLinkedQueue<ICandy>> mCandies;
+    private final LinkedBlockingDeque<ICandy> mCandies;
 
     /**
      * Пул потоков.
      */
-    private ThreadPoolExecutor mExecutor;
-
-    /**
-     * Пул потоков для добавления конфеты.
-     */
-    private ThreadPoolExecutor mAddCandyExecutor;
+    private final ThreadPoolExecutor mExecutor;
 
     /**
      * Словарь типа "вкус - доступность для пожирания".
      */
-    private Hashtable<Integer, Boolean> mEnableFlavoursDict;
+    private final Set<Integer> mProcessedFlavours;
+
+    /**
+     * Флаг остановки диспетчера.
+     */
+    private volatile boolean mShouldTerminate;
+
+    /**
+     * Поток диспетчера.
+     */
+    private final Thread mDispatchHandler;
 
     /**
      * Конструктор.
@@ -43,22 +44,42 @@ public class CandyService extends CandyServiceBase {
      */
     public CandyService(ICandyEater[] eaters) {
         super(eaters);
-        mEatersPool = new ConcurrentLinkedQueue<>(Arrays.asList(eaters));
-        mCandies = new Hashtable<>();
+        mCandies = new LinkedBlockingDeque<>();
+        mProcessedFlavours = ConcurrentHashMap.newKeySet();
+        mDispatchHandler = new Thread(null, this::dispatchLoop, "Dispatch loop");
+
+        if (eaters == null || eaters.length == 0)
+        {
+            mExecutor = null;
+            mEatersPool = new LinkedBlockingQueue<>();
+            terminate();
+            return;
+        }
+
+        mEatersPool = new LinkedBlockingQueue<>(Arrays.asList(eaters));
         mExecutor = new ThreadPoolExecutor(
                 eaters.length,
                 eaters.length,
                 0,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(eaters.length));
-        mAddCandyExecutor = new ThreadPoolExecutor(
-                1,
-                ADD_CANDY_THREADS_COUNT,
-                0,
-                TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(ADD_CANDY_THREADS_COUNT));
-        mEnableFlavoursDict = new Hashtable<>();
+
+        mShouldTerminate = false;
+        mDispatchHandler.start();
     }
+
+    /**
+     * Остановка диспетчера.
+     */
+    @SuppressWarnings("WeakerAccess")
+    public void terminate() {
+        mShouldTerminate = true;
+
+        if (mExecutor != null) {
+            mExecutor.shutdown();
+        }
+    }
+
 
     /**
      * Добавление конфеты.
@@ -66,70 +87,13 @@ public class CandyService extends CandyServiceBase {
      */
     @Override
     public void addCandy(ICandy candy) {
-        if (candy == null) {
-            throw new NullPointerException("Не передана конфета");
-        }
+        if (candy == null)
+            throw new IllegalArgumentException("Не передана конфета");
 
-        var thread = new Thread(() -> {
-            addCandyFlavour(candy);
-            start();
-        });
-        mAddCandyExecutor.execute(thread);
-    }
+        if (mEatersPool.isEmpty())
+            throw new IllegalStateException("Нет доступных обработчиков");
 
-    /**
-     * Запись информации о вкусе.
-     * @param candy Конфета.
-     */
-    private synchronized void addCandyFlavour(ICandy candy) {
-        var flavour = candy.getCandyFlavour();
-
-        if (!mEnableFlavoursDict.containsKey(flavour)) {
-            mEnableFlavoursDict.put(flavour, true);
-            var queue = new ConcurrentLinkedQueue<ICandy>();
-            queue.add(candy);
-            mCandies.put(flavour, queue);
-        } else {
-            var queue = mCandies.get(flavour);
-            queue.add(candy);
-        }
-    }
-
-    /**
-     * Запуск сервиса.
-     */
-    private synchronized void start() {
-        var flavours = getFreeFlavours();
-
-        if (flavours.isEmpty() || mEatersPool.isEmpty()) {
-            return;
-        }
-
-        var keysIterator = mCandies.keys().asIterator();
-        var keys = new ArrayList<Integer>();
-        keysIterator.forEachRemaining(keys::add);
-
-        for (var key : keys) {
-            var eater = mEatersPool.peek();
-
-            if (eater == null)
-                break;
-
-            var queue = mCandies.get(key);
-            var candy = queue.peek();
-
-            if (candy == null)
-                continue;
-
-            var flavour = candy.getCandyFlavour();
-
-            var canBeEaten = flavours.stream().anyMatch(x -> x == flavour);
-
-            if (!canBeEaten)
-                continue;
-
-            startEater(eater, queue.poll());
-        }
+        mCandies.add(candy);
     }
 
     /**
@@ -139,36 +103,66 @@ public class CandyService extends CandyServiceBase {
      */
     private void startEater(ICandyEater eater, ICandy candy) {
         var flavour = candy.getCandyFlavour();
-        mEnableFlavoursDict.replace(flavour, false);
         var task = new EatTask(
                 eater,
                 candy,
                 () -> {
-                    mEnableFlavoursDict.replace(flavour, true);
-                    mCandies.remove(candy);
-                    start();
+                    synchronized (mProcessedFlavours) {
+                        mProcessedFlavours.remove(flavour);
+                    }
+                    mEatersPool.add(eater);
                 },
-                () -> {
-                    mEnableFlavoursDict.replace(flavour, true);
-                    start();
+                ex -> {
+                    ex.printStackTrace();
+                    synchronized (mProcessedFlavours) {
+                        mProcessedFlavours.remove(flavour);
+                    }
+                    mCandies.add(candy);
+                    mEatersPool.add(eater);
                 });
         mExecutor.execute(task);
     }
 
+    private void dispatchLoop() {
+        while (!mShouldTerminate) {
+            try {
+                dispatch();
+            }
+            catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     /**
-     * Получение вкусов, которые можно обработать.
-     * @return Вкусы, доступные для пожирания.
+     * Итерация цикла диспетчера.
+     * @throws InterruptedException Исключение при прерывании.
      */
-    private  List<Integer> getFreeFlavours() {
-        var flavours = mEnableFlavoursDict.keys();
-        var spliterator = Spliterators.spliteratorUnknownSize(flavours.asIterator(), 0);
-        var filtered = StreamSupport.stream(spliterator, false)
-                .filter(mEnableFlavoursDict::get)
-                .filter(x -> {
-                    var queue = mCandies.get(x);
-                    return !queue.isEmpty();
-                })
-                .collect(Collectors.toList());
-        return filtered;
+    private void dispatch() throws InterruptedException {
+        var skiped = new ArrayList<ICandy>();
+
+        while (!mCandies.isEmpty()) {
+            var candy = mCandies.take();
+            var flavour = candy.getCandyFlavour();
+
+            synchronized (mProcessedFlavours) {
+                if (mProcessedFlavours.contains(flavour)) {
+                    skiped.add(candy);
+                    continue;
+                }
+
+                mProcessedFlavours.add(flavour);
+            }
+
+            var eater = mEatersPool.take();
+
+            synchronized (mCandies) {
+                skiped.iterator().forEachRemaining(mCandies::addFirst);
+            }
+
+            startEater(eater, candy);
+
+            break;
+        }
     }
 }

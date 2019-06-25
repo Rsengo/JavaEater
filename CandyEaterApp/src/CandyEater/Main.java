@@ -7,9 +7,9 @@ import CandyEater.Service.CandyService;
 
 public class Main {
     public static void main(String[] args) {
-        final int EATERS_COUNT = 10;
+        final int EATERS_COUNT = 5;
         final int CANDIES_COUNT = 20;
-        final int FLAVOURS_COUNT = 4;
+        final int FLAVOURS_COUNT = 7;
 
         var eaters = new ICandyEater[EATERS_COUNT];
 
